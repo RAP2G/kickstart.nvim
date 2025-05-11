@@ -212,30 +212,30 @@ vim.g.haskell_tools = {
   hls = {
     settings = {
       haskell = {
-        checkProject = false,
+        checkProject = true,
 
         plugin = {
           hlint = {
             globalOn = false,
           },
           importLens = {
-            globalOn = false,
-            codeActionsOn = false,
-            codeLensOn = false,
+            globalOn = true,
+            codeActionsOn = true,
+            codeLensOn = true,
           },
           ['ghcide-type-lenses'] = {
-            globalOn = false,
-            config = {
-              mode = 'never',
-            },
+            globalOn = true,
+            -- config = {
+            -- mode = 'never',
+            --  },
           },
           tactics = {
-            codeActionsOn = false,
-            codeLensOn = false,
-            hoverOn = false,
+            codeActionsOn = true,
+            codeLensOn = true,
+            hoverOn = true,
           },
           eval = {
-            globalOn = false,
+            globalOn = true,
           },
         },
       },
