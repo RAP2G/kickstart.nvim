@@ -102,10 +102,10 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
-vim.opt.mouse = 'a'
+vim.opt.mouse = 'i'
 
 -- Don't show the mode, since it's already in the status line
 vim.opt.showmode = false
@@ -114,9 +114,10 @@ vim.opt.showmode = false
 --  Schedule the setting after `UiEnter` because it can increase startup-time.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.schedule(function()
-  vim.opt.clipboard = 'unnamedplus'
-end)
+-- vim.schedule(function()
+-- vim.opt.clipboard = 'unnamedplus'
+-- end)
+vim.keymap.set('v', '<leader>y', '"+y', { desc = 'Copy to clipboard' })
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -179,10 +180,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
--- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
--- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
--- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
--- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -212,36 +213,47 @@ vim.g.haskell_tools = {
   hls = {
     settings = {
       haskell = {
-        checkProject = true,
 
         plugin = {
           hlint = {
             globalOn = false,
-          },
-          importLens = {
-            globalOn = true,
-            codeActionsOn = true,
-            codeLensOn = true,
-          },
-          ['ghcide-type-lenses'] = {
-            globalOn = true,
-            -- config = {
-            -- mode = 'never',
-            --  },
-          },
-          tactics = {
-            codeActionsOn = true,
-            codeLensOn = true,
-            hoverOn = true,
-          },
-          eval = {
-            globalOn = true,
           },
         },
       },
     },
   },
 }
+-- Diagnostics config
+vim.diagnostic.config {
+  virtual_text = false,
+  virtual_lines = true,
+  update_in_insert = true,
+  severity_sort = true,
+}
+
+-- Toggle diganostics
+local function toggle_diagnostics()
+  vim.g.diagnostics_on = not vim.g.diagnostics_on
+  if vim.g.diagnostics_on then
+    vim.diagnostic.config {
+      virtual_lines = {
+        severity = {
+          min = 'ERROR',
+        },
+      },
+    }
+  else
+    vim.diagnostic.config {
+      virtual_lines = {
+        severity = {
+          min = 'HINT',
+        },
+      },
+    }
+  end
+end
+
+vim.keymap.set('n', '<leader>tw', toggle_diagnostics, { desc = 'Toggle diagnostics' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -659,6 +671,14 @@ require('lazy').setup({
         -- gopls = {},
         pyright = {},
         rust_analyzer = {},
+        zls = {
+          settings = {
+            zls = {
+              semantic_tokens = 'partial',
+            },
+          },
+        },
+        jdtls = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -666,7 +686,6 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         ts_ls = {},
-        zls = {},
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
